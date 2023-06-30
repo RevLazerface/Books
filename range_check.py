@@ -16,6 +16,9 @@ index markings fort he true beginning and ending into a simple csv for Books_exp
 of adding new books easy, requiring only a brief interation through this file and running books_exp.py once afterwards.
 '''
 
+# NOTE This file could definitely be streamlined. Maybe with classes, maybe with functions, maybe both, but it's
+# past 1am so that's a problem for you, future Nick, you handsome devil you
+
 def main():
     while True:
         # Gather pathways to both the folder of .txt files and books.csv
@@ -27,6 +30,8 @@ def main():
         books = os.listdir(folder_path)
 
         # Gather current books.csv into a list of dicts
+        if not os.path.isfile(csv_path):
+            f = open("books.csv", "w")
         with open(csv_path, 'r') as f:
             dict_reader = csv.DictReader(f)
             range_list = list(dict_reader)
@@ -36,7 +41,7 @@ def main():
         entered = []
         print("Choose from the following file names or type 'EXIT' to exit:\n")
         for b in books:
-            if any(b in e['file_path'] for e in range_list):
+            if any(b in e['File Name'] for e in range_list):
                 entered.append(True)
                 print(f"{x}: {b} (entered)")
             else:
@@ -79,10 +84,8 @@ def main():
         i = 0
         found = False
         while not found:
-            try:
-                sent_list[i]
-            except TypeError:
-                print("You've scrolled too far! Back to the start with you, you filthy mongrel!")
+            if not 0 <= i < len(sent_list):
+                print("\n!!! You've scrolled too far! Back to the start with you, you filthy mongrel !!!\n")
                 i=0
                 continue
             mark = input(f"\n{sent_list[i]}\n")
@@ -109,11 +112,9 @@ def main():
         i = len(sent_list) - 1
         found = False
         while not found:
-            try:
-                sent_list[i]
-            except TypeError:
-                print("You've scrolled too far! Back to the start with you, you filthy mongrel!")
-                i=0
+            if not 0 <= i < len(sent_list):
+                print("\n!!! You've scrolled too far! Back to the start with you, you filthy mongrel !!!\n")
+                i = len(sent_list) - 1
                 continue
             mark = input(f"\n{sent_list[i]}\n")
             if mark == '':
@@ -134,18 +135,64 @@ def main():
         if not found:
             break
 
+        # TODO After picking index ranges, enter additional info like author's full name and genre
+        # NOTE my validate_input function from the flashcards project can help here
+        print("\nRanges input successfully! Now for additional info:\n")
+        while True:
+            author = input("Author full name:")
+            correct = input(f"Is {author} correct? (Y/N):")
+            if correct not in ['Y','N']:
+                print('invalid input, try again!')
+                continue
+            elif correct == 'N':
+                continue
+            else:
+                break
+
+        while True:
+            title = input("\nFull book title:")
+            correct = input(f"Is {title} correct? (Y/N):")
+            if correct not in ['Y','N']:
+                print('invalid input, try again!')
+                continue
+            elif correct == 'N':
+                continue
+            else:
+                break
+            
+        while True:
+            genres = ["Sci-Fi", "Fantasy", "Humor", "Romance", "Crime", "Western"]
+            print("\nInput the index number for the proper genre\n")
+            i = 0
+            for g in genres:
+                print(f"{i}: {g}")
+                i += 1
+            pick = input("\nInput: ")
+            if pick not in ['0','1','2','3','4','5']:
+                print("Invalid input, try again!")
+                continue
+            correct = input(f"Is {genres[int(pick)]} correct? (Y/N):")
+            if correct not in ['Y','N']:
+                print('invalid input, starting over!')
+                continue
+            elif correct == 'N':
+                continue
+            else:
+                break
+
+
         # Either update and replace the old row using a temporary file, or simply append the new row
-        entry = {'file_path':book, 'first_sent':first, 'last_sent':last}
+        entry = {'File Name':this_book, 'Title':title, 'Author':author, 'Genre':genres[int(pick)], 'First Sentence':first, 'Last Sentence':last}
         if entered[int(index)]:
             tempfile = NamedTemporaryFile(mode='w', delete=False)
             with open('books.csv', 'r') as csvfile, tempfile:
                 reader = csv.DictReader(csvfile, fieldnames=entry.keys())
                 writer = csv.DictWriter(tempfile, fieldnames=entry.keys())
                 for row in reader:
-                    if row['file_path'] == book:
+                    if row['File Name'] == this_book:
                         print('updating row', this_book)
                         row['first_sent'], row['last_sent'] = entry['first_sent'], entry['last_sent'] 
-                    row = {'file_path':row['file_path'], 'first_sent':row['first_sent'], 'last_sent':row['last_sent']}   
+                    row = {'File Name':row['File Name'], 'first_sent':row['first_sent'], 'last_sent':row['last_sent']}   
                     writer.writerow(row)
             shutil.move(tempfile.name, 'books.csv')
         else:
@@ -156,7 +203,7 @@ def main():
         
         # Check if user wants to continue and end program if not.
         while True:
-            cont = input("\nContinue? (Y/N):")
+            cont = input("\nEntry complete! Continue? (Y/N):")
             if cont not in ['Y','N']:
                 print('invalid input, try again!')
                 continue
@@ -167,6 +214,5 @@ def main():
         elif cont == 'N':
             break
     
-
 if __name__ == "__main__":
     main()
