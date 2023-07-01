@@ -139,7 +139,7 @@ def main():
         # NOTE my validate_input function from the flashcards project can help here
         print("\nRanges input successfully! Now for additional info:\n")
         while True:
-            author = input("Author full name:")
+            author = input("Author full name: ")
             correct = input(f"Is {author} correct? (Y/N):")
             if correct not in ['Y','N']:
                 print('invalid input, try again!')
@@ -150,7 +150,7 @@ def main():
                 break
 
         while True:
-            title = input("\nFull book title:")
+            title = input("\nFull book title: ")
             correct = input(f"Is {title} correct? (Y/N):")
             if correct not in ['Y','N']:
                 print('invalid input, try again!')
@@ -191,14 +191,17 @@ def main():
                 for row in reader:
                     if row['File Name'] == this_book:
                         print('updating row', this_book)
-                        row['first_sent'], row['last_sent'] = entry['first_sent'], entry['last_sent'] 
-                    row = {'File Name':row['File Name'], 'first_sent':row['first_sent'], 'last_sent':row['last_sent']}   
-                    writer.writerow(row)
+                        writer.writerow(entry)
+                    #     row['First Sentence'], row['Last Sentence'] = entry['First Sentence'], entry['Last Sentence'] 
+                    # new_row = {'File Name':row['File Name'], 'First Sentence':entry['First Sentence'], 'Last Sentence':row['Last Sentence']}   
+                    else:
+                        writer.writerow(row)
             shutil.move(tempfile.name, 'books.csv')
         else:
             with open('books.csv', 'a', newline='') as f:
                 writer = csv.DictWriter(f, fieldnames=entry.keys())
-                writer.writeheader()
+                if os.stat('books.csv').st_size == 0:
+                    writer.writeheader()
                 writer.writerow(entry)
         
         # Check if user wants to continue and end program if not.

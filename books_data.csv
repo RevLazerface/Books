@@ -1,0 +1,4 @@
+Title,Author,Genre,total_characters,total_words,total_sentences,fs_characters,fs_words,ls_characters,ls_words,total_vocabulary,vocabulary_rate
+The Time Machine,H. G. Wells,Sci-Fi,154802,35329,1822,99,24,190,46,5355,0.15
+The War of the Worlds,H. G. Wells,Sci-Fi,278863,62985,3105,351,77,111,35,7694,0.12
+The Island of Doctor Moreau,H. G. Wells,Sci-Fi,201125,46544,2543,437,102,36,12,6231,0.13
