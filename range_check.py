@@ -39,6 +39,7 @@ def main():
         # Present list of options, marking which files have already been processed
         x = 0
         entered = []
+        books = [x for x in sorted(books) if ".txt" in x]
         print("Choose from the following file names or type 'EXIT' to exit:\n")
         for b in books:
             if any(b in e['File Name'] for e in range_list):
@@ -138,51 +139,50 @@ def main():
         # TODO After picking index ranges, enter additional info like author's full name and genre
         # NOTE my validate_input function from the flashcards project can help here
         print("\nRanges input successfully! Now for additional info:\n")
+        
+    
+        author = input("Author full name: ")
+        title = input("\nFull book title: ")
+        print("\nInput the index number for the proper genre\n")
+        done = True
+        g_opts = ["Sci-Fi", "Horror", "Adventure", "Fantasy", "Mystery", "Western"]
+        genres = []
         while True:
-            author = input("Author full name: ")
-            correct = input(f"Is {author} correct? (Y/N):")
-            if correct not in ['Y','N']:
-                print('invalid input, try again!')
-                continue
-            elif correct == 'N':
-                continue
-            else:
-                break
-
-        while True:
-            title = input("\nFull book title: ")
-            correct = input(f"Is {title} correct? (Y/N):")
-            if correct not in ['Y','N']:
-                print('invalid input, try again!')
-                continue
-            elif correct == 'N':
-                continue
-            else:
-                break
-            
-        while True:
-            genres = ["Sci-Fi", "Fantasy", "Humor", "Romance", "Crime", "Western"]
-            print("\nInput the index number for the proper genre\n")
             i = 0
-            for g in genres:
+            for g in g_opts:
                 print(f"{i}: {g}")
                 i += 1
             pick = input("\nInput: ")
-            if pick not in ['0','1','2','3','4','5']:
+            if pick not in [str(x) for x in range(len(g_opts))] or pick == '':
                 print("Invalid input, try again!")
                 continue
-            correct = input(f"Is {genres[int(pick)]} correct? (Y/N):")
+            if pick == '':
+                break
+            more = input("Select another genre? (Y/N): ")
+            if more not in ['Y','N']:
+                done = False
+                print('invalid input, starting over!')
+                break
+            elif more == 'Y':
+                genres.append(this := g_opts[int(pick)])
+                g_opts.remove(this)
+                continue
+            else:
+                genres.append(g_opts[int(pick)])
+                break
+        if not done:
+            continue
+        else:
+            correct = input(f"- Entry -\nAuthor: {author}\nTitle: {title}\nGenre(s): {genres}\n\nIs this correct?(Y/N): ")
             if correct not in ['Y','N']:
                 print('invalid input, starting over!')
                 continue
             elif correct == 'N':
-                continue
-            else:
-                break
-
+                print("Oopsie Poopsie, let's try that again!\n")
+                continue 
 
         # Either update and replace the old row using a temporary file, or simply append the new row
-        entry = {'File Name':this_book, 'Title':title, 'Author':author, 'Genre':genres[int(pick)], 'First Sentence':first, 'Last Sentence':last}
+        entry = {'File Name':this_book, 'Title':title, 'Author':author, 'Genre':", ".join(genres), 'First Sentence':first, 'Last Sentence':last}
         if entered[int(index)]:
             tempfile = NamedTemporaryFile(mode='w', delete=False)
             with open('books.csv', 'r') as csvfile, tempfile:
@@ -191,9 +191,7 @@ def main():
                 for row in reader:
                     if row['File Name'] == this_book:
                         print('updating row', this_book)
-                        writer.writerow(entry)
-                    #     row['First Sentence'], row['Last Sentence'] = entry['First Sentence'], entry['Last Sentence'] 
-                    # new_row = {'File Name':row['File Name'], 'First Sentence':entry['First Sentence'], 'Last Sentence':row['Last Sentence']}   
+                        writer.writerow(entry)  
                     else:
                         writer.writerow(row)
             shutil.move(tempfile.name, 'books.csv')

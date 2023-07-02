@@ -1,4 +1,9 @@
 Title,Author,Genre,total_characters,total_words,total_sentences,fs_characters,fs_words,ls_characters,ls_words,total_vocabulary,vocabulary_rate
-The Time Machine,H. G. Wells,Sci-Fi,154802,35329,1822,99,24,190,46,5355,0.15
+The Time Machine,H. G. Wells,"Fantasy, Sci-Fi",154802,35329,1822,87,23,190,46,5355,0.15
 The War of the Worlds,H. G. Wells,Sci-Fi,278863,62985,3105,351,77,111,35,7694,0.12
-The Island of Doctor Moreau,H. G. Wells,Sci-Fi,201125,46544,2543,437,102,36,12,6231,0.13
+The Island of Doctor Moreau,H. G. Wells,Sci-Fi,201125,46544,2544,110,27,36,12,6231,0.13
+Dorothy and the Wizard in Oz,L. Frank Baum,Fantasy,196772,47329,2559,44,10,48,17,5129,0.11
+The Marvellous Land of Oz,L. Frank Baum,Adventure,193833,44630,1731,79,24,106,31,5137,0.12
+Ozma of Oz,L. Frank Baum,"Fantasy, Adventure",187501,44558,2388,75,18,38,13,5198,0.12
+The Wonderful Wizard of Oz,L. Frank Baum,"Fantasy, Adventure",172549,42514,1591,108,32,13,6,3725,0.09
+The World Set Free,H. G. Wells,Sci-Fi,311855,67728,2727,62,14,184,47,9485,0.14

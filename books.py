@@ -27,6 +27,7 @@ TODO design book class (need a brief refresher on class creation)
 '''
 
 def main():
+    start = time.time()
     # Gather pathways to both the folder of .txt files and books.csv
     script_dir = os.path.dirname(__file__)
     folder = 'Books'
@@ -66,6 +67,10 @@ def main():
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(library)
+
+    end = time.time()
+    total_time = end - start
+    print("\n"+ str(total_time))
 
 # NOTE Currently no better than the dict that inits it, but I suspect I will be able to add useful methods.
 # If not, I can always delete it, but I honestly like the syntax anyway.
