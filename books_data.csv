@@ -1,9 +1,15 @@
-Title,Author,Genre,total_characters,total_words,total_sentences,fs_characters,fs_words,ls_characters,ls_words,total_vocabulary,vocabulary_rate
-The Time Machine,H. G. Wells,"Fantasy, Sci-Fi",154802,35329,1822,87,23,190,46,5355,0.15
-The War of the Worlds,H. G. Wells,Sci-Fi,278863,62985,3105,351,77,111,35,7694,0.12
-The Island of Doctor Moreau,H. G. Wells,Sci-Fi,201125,46544,2544,110,27,36,12,6231,0.13
-Dorothy and the Wizard in Oz,L. Frank Baum,Fantasy,196772,47329,2559,44,10,48,17,5129,0.11
-The Marvellous Land of Oz,L. Frank Baum,Adventure,193833,44630,1731,79,24,106,31,5137,0.12
-Ozma of Oz,L. Frank Baum,"Fantasy, Adventure",187501,44558,2388,75,18,38,13,5198,0.12
-The Wonderful Wizard of Oz,L. Frank Baum,"Fantasy, Adventure",172549,42514,1591,108,32,13,6,3725,0.09
-The World Set Free,H. G. Wells,Sci-Fi,311855,67728,2727,62,14,184,47,9485,0.14
+Title,Author,Genre,Total_Characters,Total_Words,Total_Vocabulary,Total_Sentences,FS_Characters,FS_Words,LS_Characters,LS_Words
+The Time Machine,H. G. Wells,"Fantasy, Sci-Fi",154802,35329,5355,1822,87,23,190,46
+The War of the Worlds,H. G. Wells,Sci-Fi,278863,62985,7694,3105,351,77,111,35
+The Island of Doctor Moreau,H. G. Wells,"Fantasy, Sci-Fi",201125,46544,6231,2544,110,27,36,12
+Dorothy and the Wizard in Oz,L. Frank Baum,"Fantasy, Adventure",196772,47329,5129,2559,44,10,48,17
+The Marvellous Land of Oz,L. Frank Baum,"Fantasy, Adventure",193833,44630,5137,1731,79,24,106,31
+Ozma of Oz,L. Frank Baum,"Fantasy, Adventure",187501,44558,5198,2388,75,18,38,13
+The Wonderful Wizard of Oz,L. Frank Baum,"Fantasy, Adventure",172549,42514,3725,1591,108,32,13,6
+The World Set Free,H. G. Wells,Sci-Fi,311855,67728,9485,2727,62,14,184,47
+A Journey to the Centre of the Earth,Jules Verne,"Adventure, Sci-Fi",399715,91076,8700,5349,107,27,180,35
+From the Earth to the Moon,Jules Verne,"Adventure, Sci-Fi",439353,93268,9379,4072,104,25,177,36
+Around the World in Eighty Days,Jules Verne,Adventure,299828,65632,7929,2837,173,46,58,16
+Five Weeks in a Balloon,Jules Verne,Adventure,418301,93592,9589,3836,121,30,308,69
+The Mysterious Island,Jules Verne,"Adventure, Sci-Fi",884999,196521,10796,8645,295,77,318,81
+Twenty Thousand Leagues under the Sea,Jules Verne,"Sci-Fi, Adventure",477162,106600,9849,5395,114,24,183,48

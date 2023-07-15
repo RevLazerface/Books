@@ -16,9 +16,6 @@ index markings fort he true beginning and ending into a simple csv for Books_exp
 of adding new books easy, requiring only a brief interation through this file and running books_exp.py once afterwards.
 '''
 
-# NOTE This file could definitely be streamlined. Maybe with classes, maybe with functions, maybe both, but it's
-# past 1am so that's a problem for you, future Nick, you handsome devil you
-
 def main():
     while True:
         # Gather pathways to both the folder of .txt files and books.csv
@@ -36,21 +33,27 @@ def main():
             dict_reader = csv.DictReader(f)
             range_list = list(dict_reader)
 
-        # Present list of options, marking which files have already been processed
-        x = 0
+        # Present list of options, marking which files have already been processed adn storing their entered status in a 
+        # list of bools (each value in entered will match it's respective index number in books)
+
+# TODO NOTE turn below into choose_book(books, range_list) function
+        # NOTE This might be easier to do by building a list of dicts with a for loop. It would be functionally the same but
+        # probably less prone to errors if the values are actually connected in the same object, rather than just sharing index numbers
         entered = []
         books = [x for x in sorted(books) if ".txt" in x]
         print("Choose from the following file names or type 'EXIT' to exit:\n")
+        i = 0
         for b in books:
             if any(b in e['File Name'] for e in range_list):
                 entered.append(True)
-                print(f"{x}: {b} (entered)")
+                print(f"{i}: {b} (entered)")
             else:
                 entered.append(False)
-                print(f"{x}: {b}")
-            x += 1
+                print(f"{i}: {b}")
+            i += 1
         
         # Validate input
+        # NOTE This is super barebones validation, more for catching typos than maliciousness.
         index = input("\nBook index number: ")
         if index == 'EXIT':
             break
@@ -64,51 +67,67 @@ def main():
         book = os.path.join(folder_path, this_book)
 
         # Double check with user if selection has already been entered
-        if entered[int(index)]:
-            while True:
-                redo = input("\nBook range already entered, redo entry? (Y/N):")
-                if redo not in ['Y','N']:
-                    print('invalid input, try again!')
-                    continue
-                else:
-                    break
+        if entered[int(index)]:            
+            redo = choose("\nBook range already entered, redo entry? (Y/N):",'Y','N')
             if redo == 'N':
                 continue
+# TODO NOTE END choose_book()
 
+# TODO NOTE create new class (not book, already used in books.py and it that would be confusing) and use this as the __init__
         # Gather text as list of sentences
         with open(book) as f:
             contents = f.read()
         sent_list = sent_tokenize(contents)
 
+
+# NOTE Review the following link to make this more concise: https://stackoverflow.com/questions/23294658/asking-the-user-for-input-until-they-give-a-valid-response
+# And review this one for how to make these functions class methods: https://stackoverflow.com/questions/32721580/example-of-class-with-user-input
+
+# TODO NOTE already started scroll function as new_func(), needs 
         # Scroll to find the first sentence using terminal commands
-        print("Hit enter without input to view next sentence, or type the number of sentences you wish to scroll by(negative numbers will scroll backwards), until the true first sentence is found. If first sentence is found, type '!'. If you need to exit and return to book select, type '?'")
+        print("Hit enter without input to view next sentence, or type the number of sentences you wish to scroll by(negative numbers will scroll backwards), until the true first sentence is found. If first sentence is found, type '!'. If you need to exit and return to book select, type '?'. To reload the book, type'#.")
         i = 0
         found = False
         while not found:
+            # Catch indices outside of the range, INCLUDING negative numbers which I forgot reverse indexes the list
             if not 0 <= i < len(sent_list):
                 print("\n!!! You've scrolled too far! Back to the start with you, you filthy mongrel !!!\n")
                 i=0
                 continue
+
+            # Move forward by one index number
             mark = input(f"\n{sent_list[i]}\n")
             if mark == '':
                 i += 1
                 continue
-            elif mark == '?':
-                break
-            elif mark == '!':
-                found = True
-                first = i
-                continue
+            # Move forward by variable number
             elif mark.isnumeric:
                 i += int(mark)
                 continue
+            # Restart the selection process after updating the sent_list
+# NOTE This is for editing fluff out of the first and last sentences if formatting issues cause them to be inaccurate,
+# I just have to open the txt file in another tab, edit it, and use this command to come back to the same spot in the edited file
+# TODO NOTE MUST BE ADDED to new_func, but needs the new class first.
+            elif mark == '#':
+                with open(book) as f:
+                    contents = f.read()
+                sent_list = sent_tokenize(contents)
+                continue
+            # Mark the index as the begining.
+            elif mark == '!':
+                found = True
+                first = i
+                continue     
+            # Return to book selection      
+            elif mark == '?':
+                break
             else:
                 print('Invalid input, try again!')
                 continue
-        if not found:
-            break
+# NOTE pretty sure the below is uneccesary, turning it off and we'll see what happens!
+        # if not found:
+        #     continue
 
-        # NOTE This should be a function maybe? I'm using it twice in a row with only minor changes
         print("Hit type '.' to view previous sentence, or type the number of sentences you wish to scroll by (negative numbers will scroll backwards), until the true last sentence is found. If last sentence is found, type '!'. If you need to exit and return to book select, type '?'")
         i = len(sent_list) - 1
         found = False
@@ -136,15 +155,12 @@ def main():
         if not found:
             break
 
-        # TODO After picking index ranges, enter additional info like author's full name and genre
-        # NOTE my validate_input function from the flashcards project can help here
+
+# TODO NOTE These can all be functs or methods depending on whether I choose to make a second new class or not
         print("\nRanges input successfully! Now for additional info:\n")
-        
-    
         author = input("Author full name: ")
         title = input("\nFull book title: ")
         print("\nInput the index number for the proper genre\n")
-        done = True
         g_opts = ["Sci-Fi", "Horror", "Adventure", "Fantasy", "Mystery", "Western"]
         genres = []
         while True:
@@ -153,31 +169,21 @@ def main():
                 print(f"{i}: {g}")
                 i += 1
             pick = input("\nInput: ")
-            if pick not in [str(x) for x in range(len(g_opts))] or pick == '':
-                print("Invalid input, try again!")
-                continue
             if pick == '':
                 break
-            more = input("Select another genre? (Y/N): ")
-            if more not in ['Y','N']:
-                done = False
-                print('invalid input, starting over!')
-                break
-            elif more == 'Y':
-                genres.append(this := g_opts[int(pick)])
-                g_opts.remove(this)
+            if pick not in [str(x) for x in range(len(g_opts))]:
+                print("Invalid input, try again!")
+                continue
+            genres.append(this := g_opts[int(pick)])
+            g_opts.remove(this)
+
+            more = choose("Select another genre? (Y/N): ",'Y','N')
+            if more == 'Y':
                 continue
             else:
-                genres.append(g_opts[int(pick)])
                 break
-        if not done:
-            continue
-        else:
-            correct = input(f"- Entry -\nAuthor: {author}\nTitle: {title}\nGenre(s): {genres}\n\nIs this correct?(Y/N): ")
-            if correct not in ['Y','N']:
-                print('invalid input, starting over!')
-                continue
-            elif correct == 'N':
+        correct = choose(f"- Entry -\nAuthor: {author}\nTitle: {title}\nGenre(s): {', '.join(genres)}\n\nIs this correct?(Y/N): ",'Y','N')
+        if correct == 'N':
                 print("Oopsie Poopsie, let's try that again!\n")
                 continue 
 
@@ -203,17 +209,73 @@ def main():
                 writer.writerow(entry)
         
         # Check if user wants to continue and end program if not.
-        while True:
-            cont = input("\nEntry complete! Continue? (Y/N):")
-            if cont not in ['Y','N']:
-                print('invalid input, try again!')
-                continue
-            else:
-                break
+        cont = choose("\nEntry complete! Continue? (Y/N):",'Y','N')
         if cont == 'Y':
             continue
         elif cont == 'N':
             break
+
+def choose(prompt, arg1, arg2):
+    """
+    Choose automates asking a prompt in a while loop to allow reprompting, returning only one of the correct options
+    It can't be broken except by inputing one of the correct options 
+    """
+
+    tries = 0
+    while True:
+        if tries == 3:
+            print("Warning! One more improper input and the program will exit. I believe in you!")
+        if tries == 4:
+            raise UserShenanigans
+        choice = input(prompt).strip()
+        if choice not in [arg1, arg2]:
+            print(f"\nInvalid input. Please only input one of the stated options ( {arg1} , {arg2} ) exactly as written (case sensitively!)\n")
+            tries += 1
+            continue
+        else:
+            break
+    if choice == arg1:
+        return arg1
+    else:
+        return arg2
+    
+
+# Testing turning the scrolling feature into a single function, looks good so far
+def new_func(sent_list, spot):
+    print("Hit type '.' to view previous sentence, or type the number of sentences you wish to scroll by (negative numbers will scroll backwards), until the true last sentence is found. If last sentence is found, type '!'. If you need to exit and return to book select, type '?'")
+    i = 0 if spot == 'front' else len(sent_list) - 1
+    found = False
+    while not found:
+        if not 0 <= i < len(sent_list):
+            print("\n!!! You've scrolled too far! Back to the start with you, you filthy mongrel !!!\n")
+            i = 0 if spot == 'front' else len(sent_list) - 1
+            continue
+        mark = input(f"\n{sent_list[i]}\n")
+        if mark == '':
+            i += 1 if spot == 'front' else -1
+            continue
+        elif mark == '?':
+            break
+        elif mark == '!':
+            found = True
+            index = i
+            continue
+        elif mark.isnumeric:
+            i += int(mark) if spot == 'front' else -(int(mark))
+            continue
+        else:
+            print('Invalid input, try again!')
+            continue
+    if not found:
+        return None
+    return index
+    
+
+class UserShenanigans(Exception):
+    def __init__(self):
+        self.message = "Program exitted due to excessive silliness(you know what you did). It's been a pleasure nonetheless!"
+    def __str__(self):
+        return self.message  
     
 if __name__ == "__main__":
     main()

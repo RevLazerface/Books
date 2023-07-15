@@ -6,6 +6,7 @@ import os
 from nltk.tokenize import sent_tokenize, word_tokenize
 from string import ascii_letters
 
+
 #NOTE The below code was used to download what I needed from nltk
 # try:
 #     _create_unverified_https_context = ssl._create_unverified_context
@@ -30,11 +31,11 @@ def main():
     start = time.time()
     # Gather pathways to both the folder of .txt files and books.csv
     script_dir = os.path.dirname(__file__)
-    folder = 'Books'
+    #folder = 'Books'
     csv_file = 'books.csv'
-    folder_path = os.path.join(script_dir, folder)
+    #folder_path = os.path.join(script_dir, folder)
     csv_path = os.path.join(script_dir, csv_file)
-    file_list = os.listdir(folder_path)
+    #file_list = os.listdir(folder_path)
 
     # Gather current books.csv into a list of dicts
     if not os.path.isfile(csv_path):
@@ -51,16 +52,14 @@ def main():
                 'Title': book.title
                 ,'Author': book.author
                 ,'Genre': book.genre
-                ,'total_characters': sum([get_chars(sent) for sent in book.words])
-                ,'total_words': (words := sum([len(sent) for sent in book.words]))  
-                ,'total_sentences': len(book.split)
-                ,'fs_characters': get_chars(first := word_tokenize(book.first))
-                ,'fs_words': len(first)
-                ,'ls_characters': get_chars(last := word_tokenize(book.last))
-                ,'ls_words': len(last)
-                # total vocabulary used divide total words used
-                ,'total_vocabulary': (vocab := len(set(sum(book.words, []))))
-                ,'vocabulary_rate': round(vocab/words,2)})
+                ,'Total_Characters': sum([get_chars(sent) for sent in book.words])
+                ,'Total_Words': sum([len(sent) for sent in book.words])
+                ,'Total_Vocabulary': len(set(sum(book.words, [])))
+                ,'Total_Sentences': len(book.split)
+                ,'FS_Characters': get_chars(first := word_tokenize(book.first))
+                ,'FS_Words': len(first)
+                ,'LS_Characters': get_chars(last := word_tokenize(book.last))
+                ,'LS_Words': len(last)})
     
     keys = library[0].keys()
     with open('books_data.csv', 'w', newline='') as output_file:

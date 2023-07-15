@@ -1,9 +1,15 @@
 File Name,Title,Author,Genre,First Sentence,Last Sentence
 wells-time-machine.txt,The Time Machine,H. G. Wells,"Fantasy, Sci-Fi",5,1827
 wells-war-of-the-worlds.txt,The War of the Worlds,H. G. Wells,Sci-Fi,65,3170
-wells-doctor-moreau.txt,The Island of Doctor Moreau,H. G. Wells,Sci-Fi,25,2569
-baum-dorothy.txt,Dorothy and the Wizard in Oz,L. Frank Baum,Fantasy,39,2598
-baum-marvelous.txt,The Marvellous Land of Oz,L. Frank Baum,Adventure,10,1741
+wells-doctor-moreau.txt,The Island of Doctor Moreau,H. G. Wells,"Fantasy, Sci-Fi",25,2569
+baum-dorothy.txt,Dorothy and the Wizard in Oz,L. Frank Baum,"Fantasy, Adventure",39,2598
+baum-marvelous.txt,The Marvellous Land of Oz,L. Frank Baum,"Fantasy, Adventure",10,1741
 baum-ozma.txt,Ozma of Oz,L. Frank Baum,"Fantasy, Adventure",39,2427
 baum-wonderful.txt,The Wonderful Wizard of Oz,L. Frank Baum,"Fantasy, Adventure",35,1626
 wells-set-free.txt,The World Set Free,H. G. Wells,Sci-Fi,47,2774
+verne-center-earth.txt,A Journey to the Centre of the Earth,Jules Verne,"Adventure, Sci-Fi",11,5360
+verne-earth-moon.txt,From the Earth to the Moon,Jules Verne,"Adventure, Sci-Fi",54,4126
+verne-eighty-days.txt,Around the World in Eighty Days,Jules Verne,Adventure,40,2877
+verne-five-weeks.txt,Five Weeks in a Balloon,Jules Verne,Adventure,159,3995
+verne-island.txt,The Mysterious Island,Jules Verne,"Adventure, Sci-Fi",3,8648
+verne-twenty.txt,Twenty Thousand Leagues under the Sea,Jules Verne,"Sci-Fi, Adventure",10,5405
