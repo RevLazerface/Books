@@ -24,7 +24,9 @@ def main():
         csv_file = 'books.csv'
         folder_path = os.path.join(script_dir, folder)
         csv_path = os.path.join(script_dir, csv_file)
+# NOTE Merge below into one line?
         books = os.listdir(folder_path)
+        books = [x for x in sorted(books) if ".txt" in x]
 
         # Gather current books.csv into a list of dicts
         if not os.path.isfile(csv_path):
@@ -40,13 +42,12 @@ def main():
         # NOTE This might be easier to do by building a list of dicts with a for loop. It would be functionally the same but
         # probably less prone to errors if the values are actually connected in the same object, rather than just sharing index numbers
         entered = []
-        books = [x for x in sorted(books) if ".txt" in x]
         print("Choose from the following file names or type 'EXIT' to exit:\n")
         i = 0
         for b in books:
             if any(b in e['File Name'] for e in range_list):
                 entered.append(True)
-                print(f"{i}: {b} (entered)")
+                print(f"(ENTERED) {i}: {b}")
             else:
                 entered.append(False)
                 print(f"{i}: {b}")
@@ -101,7 +102,7 @@ def main():
                 i += 1
                 continue
             # Move forward by variable number
-            elif mark.isnumeric:
+            elif mark.isnumeric():
                 i += int(mark)
                 continue
             # Restart the selection process after updating the sent_list
@@ -142,6 +143,11 @@ def main():
                 continue
             elif mark == '?':
                 break
+            elif mark == '#':
+                with open(book) as f:
+                    contents = f.read()
+                sent_list = sent_tokenize(contents)
+                continue
             elif mark == '!':
                 found = True
                 last = i
@@ -160,6 +166,7 @@ def main():
         print("\nRanges input successfully! Now for additional info:\n")
         author = input("Author full name: ")
         title = input("\nFull book title: ")
+# TODO NOTE Turning below into get_genre()
         print("\nInput the index number for the proper genre\n")
         g_opts = ["Sci-Fi", "Horror", "Adventure", "Fantasy", "Mystery", "Western"]
         genres = []
@@ -187,6 +194,7 @@ def main():
                 print("Oopsie Poopsie, let's try that again!\n")
                 continue 
 
+# NOTE TODO After streamlining, I want to consider merging this and books.py into one file and remove the intermediary csv step.
         # Either update and replace the old row using a temporary file, or simply append the new row
         entry = {'File Name':this_book, 'Title':title, 'Author':author, 'Genre':", ".join(genres), 'First Sentence':first, 'Last Sentence':last}
         if entered[int(index)]:
@@ -239,18 +247,19 @@ def choose(prompt, arg1, arg2):
     else:
         return arg2
     
-
 # Testing turning the scrolling feature into a single function, looks good so far
-def new_func(sent_list, spot):
+def get_range(scrl, spot):
+    if not isinstance(scrl, Scroller):
+            raise Exception("Tried to create a card with an improper input.")
     print("Hit type '.' to view previous sentence, or type the number of sentences you wish to scroll by (negative numbers will scroll backwards), until the true last sentence is found. If last sentence is found, type '!'. If you need to exit and return to book select, type '?'")
-    i = 0 if spot == 'front' else len(sent_list) - 1
+    i = 0 if spot == 'front' else len(scrl.sents) - 1
     found = False
     while not found:
-        if not 0 <= i < len(sent_list):
+        if not 0 <= i < len(scrl.sents):
             print("\n!!! You've scrolled too far! Back to the start with you, you filthy mongrel !!!\n")
-            i = 0 if spot == 'front' else len(sent_list) - 1
+            i = 0 if spot == 'front' else len(scrl.sents) - 1
             continue
-        mark = input(f"\n{sent_list[i]}\n")
+        mark = input(f"\n{scrl.sents[i]}\n")
         if mark == '':
             i += 1 if spot == 'front' else -1
             continue
@@ -269,7 +278,84 @@ def new_func(sent_list, spot):
     if not found:
         return None
     return index
+
+# Testing turning book selection into single function
+#NOTE I'm breaking choose_book into two functions, list_books
+def list_books(books, range_list):
+    print("Choose from the following file names or type 'EXIT' to exit:\n")
+    library = []
+    i = 0
+    for b in books:
+        file = {'file':b}
+        if any(b in e['File Name'] for e in range_list):
+            file['entered':True]
+            print(f"{i}: {b} (entered)")
+        else:
+            file['entered':False]
+            print(f"{i}: {b}")
+        library.append(file)
+        i += 1
+        
+# NOTE Still needs to be set in a while loop on the outside, with EXIT causing break and CONT causing continue
+def get_book(library, folder_path):
+    # Validate input
+    # NOTE This is super barebones validation, more for catching typos than maliciousness.
+    index = input("\nBook index number: ")
+    if index == 'EXIT':
+        return index
+    elif not index.isnumeric:
+        print("Invalid input, let's try again")
+        return "CONT"
+    try:
+        this_book = library[index]['file']
+    except TypeError:
+        print("That number wasn't a listed option you lunatic, back to start with you!")
+
+    # Double check with user if selection has already been entered
+    if library[index]['entered']:            
+        redo = choose("\nBook range already entered, redo entry? (Y/N):",'Y','N')
+        if redo == 'N':
+            return "CONT"
     
+    return os.path.join(folder_path, this_book)
+
+def get_genre():
+    print("\nInput the index number for the proper genre\n")
+    g_opts = ["Sci-Fi", "Horror", "Adventure", "Fantasy", "Mystery", "Western"]
+    genres = []
+    while True:
+        i = 0
+        for g in g_opts:
+            print(f"{i}: {g}")
+            i += 1
+        pick = input("\nInput: ")
+        if pick == '':
+            return "SKIP"
+        if pick not in [str(x) for x in range(len(g_opts))]:
+            print("Invalid input, try again!")
+            continue
+        genres.append(this := g_opts[int(pick)])
+        g_opts.remove(this)
+
+        more = choose("Select another genre? (Y/N): ",'Y','N')
+        if more == 'Y':
+            continue
+        else:
+            return genres
+
+class Scroller:
+    def __init__(self, path):
+        if not isinstance(path, str):
+            raise UserShenanigans("This Scroller object was initialized with an invalid path. Personally, I feel like it's more your fault than mine")
+        self.path = path
+        self.txt = None
+        self.sents = None
+        self.load()
+
+    def load(self):
+        with open(self.path) as f:
+            self.txt = f.read()
+        self.sents = sent_tokenize(self.txt)
 
 class UserShenanigans(Exception):
     def __init__(self):
